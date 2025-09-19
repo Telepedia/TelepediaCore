@@ -1,0 +1,30 @@
+{
+  "name": "TelepediaCore",
+  "version": "1.0.0",
+  "author": [
+    "Telepedia Ltd."
+  ],
+  "url": "https://github.com/Telepedia/TelepediaCore",
+  "descriptionmsg": "telepediacore-desc",
+  "license-name": "Apache-2.0",
+  "type": "other",
+  "requires": {
+    "MediaWiki": ">= 1.43"
+  },
+  "MessagesDirs": {
+    "TelepediaCore": [
+      "i18n"
+    ]
+  },
+  "AutoloadNamespaces": {
+    "Telepedia\\Extensions\\TelepediaCore\\": "includes/"
+  },
+  "ConfigRegistry": {
+    "TelepediaCore": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
+  },
+  "ResourceFileModulePaths": {
+    "localBasePath": "",
+    "remoteExtPath": "TelepediaCore"
+  },
+  "manifest_version": 2
+}
