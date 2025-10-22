@@ -19,12 +19,27 @@
   "AutoloadNamespaces": {
     "Telepedia\\Extensions\\TelepediaCore\\": "includes/"
   },
+  "HookHandlers": {
+    "telepedia": {
+      "class": "Telepedia\\Extensions\\TelepediaCore\\Hooks\\TelepediaHooks",
+      "services": []
+    }
+  },
+  "Hooks": {
+    "CreateWikiNewWiki": "telepedia"
+  },
   "ConfigRegistry": {
     "TelepediaCore": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
   },
   "ResourceFileModulePaths": {
     "localBasePath": "",
     "remoteExtPath": "TelepediaCore"
+  },
+  "config": {
+    "DiscordCreateWikiWebhookUrl": {
+      "description": "String. Webhook to send events for when a wiki is created.",
+      "value": null
+    }
   },
   "manifest_version": 2
 }
