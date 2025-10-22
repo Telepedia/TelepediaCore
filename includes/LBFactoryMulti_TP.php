@@ -84,7 +84,7 @@ class LBFactoryMulti_TP extends LBFactoryMulti {
 
 		try {
 
-			$wiki = Wiki::loadFromDatabaseName( null, $database );
+			$wiki = Wiki::loadFromDatabaseName( $database );
 
 			if ( $wiki ) {
 				$cluster = $wiki->getCluster();
