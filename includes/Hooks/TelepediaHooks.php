@@ -24,6 +24,9 @@ class TelepediaHooks implements CreateWikiNewWikiHook {
 
 		if ( $webhookUrl == null ) {
 			// can't do anything :(
+			wfDebugLog('TelepediaCore',
+				"Discord webhook url not set. Skipping sending wiki creation to Discord..."
+			);
 			return;
 		}
 
