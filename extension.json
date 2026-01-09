@@ -22,11 +22,14 @@
   "HookHandlers": {
     "telepedia": {
       "class": "Telepedia\\Extensions\\TelepediaCore\\Hooks\\TelepediaHooks",
-      "services": []
+      "services": [
+        "HttpRequestFactory"
+      ]
     }
   },
   "Hooks": {
-    "CreateWikiNewWiki": "telepedia"
+    "CreateWikiNewWiki": "telepedia",
+    "RightToBeForgottenComplete": "telepedia"
   },
   "ConfigRegistry": {
     "TelepediaCore": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
@@ -38,6 +41,14 @@
   "config": {
     "DiscordCreateWikiWebhookUrl": {
       "description": "String. Webhook to send events for when a wiki is created.",
+      "value": null
+    },
+    "RTBFJiraWebhook": {
+      "description": "String. Jira Webhook url to POST request to be forgotten events to.",
+      "value": null
+    },
+    "RTBFJiraAccessToken": {
+      "description": "String. Jira access token to authenticate with the Jira API",
       "value": null
     }
   },

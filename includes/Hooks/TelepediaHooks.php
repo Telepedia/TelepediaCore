@@ -2,13 +2,20 @@
 
 namespace Telepedia\Extensions\TelepediaCore\Hooks;
 
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\User;
 use Telepedia\ConfigCentre\Wiki;
 use Telepedia\Extensions\CreateWiki\Hooks\CreateWikiNewWikiHook;
+use Telepedia\Extensions\RequestToBeForgotten\Hooks\RightToBeForgottenRequestComplete;
+use Telepedia\Extensions\RequestToBeForgotten\RTBFRequest;
 use Throwable;
 
-class TelepediaHooks implements CreateWikiNewWikiHook {
+class TelepediaHooks implements CreateWikiNewWikiHook, RightToBeForgottenRequestComplete {
+
+	public function __construct(
+		private readonly HttpRequestFactory $requestFactory
+	) {}
 
 	/**
 	 * Send a notification to Discord on wiki creation
@@ -24,9 +31,6 @@ class TelepediaHooks implements CreateWikiNewWikiHook {
 
 		if ( $webhookUrl == null ) {
 			// can't do anything :(
-			wfDebugLog('TelepediaCore',
-				"Discord webhook url not set. Skipping sending wiki creation to Discord..."
-			);
 			return;
 		}
 
@@ -71,11 +75,8 @@ class TelepediaHooks implements CreateWikiNewWikiHook {
 			'embeds' => [ $embed ]
 		];
 
-		$services = MediaWikiServices::getInstance();
-		$httpRequestFactory = $services->getHttpRequestFactory();
-
 		try {
-			$req = $httpRequestFactory->create(
+			$req = $this->requestFactory->create(
 				$webhookUrl,
 				[
 					'method' => 'POST',
@@ -99,6 +100,52 @@ class TelepediaHooks implements CreateWikiNewWikiHook {
 			}
 		} catch ( Throwable $e ) {
 			wfDebugLog('TelepediaCore', 'Exception sending Discord webhook: ' . $e->getMessage());
+		}
+	}
+
+	/**
+	 * Send a notification to Jira when a request to be forgotten has been completed
+	 */
+	public function onRightToBeForgottenComplete( RTBFRequest $request ): void {
+		$config = MediaWikiServices::getInstance()->getConfigFactory()->makeConfig( 'TelepediaCore' );
+		$jiraWebhook = $config->get( 'RTBFJiraWebhook' );
+		$jiraAccessToken = $config->get( 'RTBFJiraAccessToken' );
+
+		$payload = [
+			'originalUsername' => $request->originalUsername,
+			'targetUsername'   => $request->targetUsername,
+			'requestId'    => $request->id,
+			'completedAt'   => $request->finishedAt
+		];
+
+		$req = $this->requestFactory->create( $jiraWebhook, [
+			'method' => 'POST',
+			'postData' => json_encode( $payload ),
+			'headers' => [
+				'Content-Type' => 'application/json',
+				'X-Automation-Webhook-Token' => $jiraAccessToken
+			],
+			'timeout' => 5
+		] );
+
+		$req->setHeader( 'Content-Type', 'application/json' );
+		$req->setHeader( 'X-Automation-Webhook-Token', $jiraAccessToken );
+
+		try {
+
+			$req->execute();
+			$statusCode = $req->getStatus();
+			$body = $req->getContent();
+
+			// Jira responds with status code 200 on success
+			if ( $statusCode !== 200 ) {
+				wfDebugLog(
+					'TelepediaCore',
+					"Jira webhook failed: HTTP $statusCode, body: $body. Payload: " . json_encode( $payload )
+				);
+			}
+		} catch ( Throwable $e ) {
+			wfDebugLog('TelepediaCore', 'Exception request to be forgotten event to Jira: ' . $e->getMessage());
 		}
 	}
 }
