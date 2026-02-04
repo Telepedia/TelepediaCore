@@ -2,6 +2,7 @@
 
 namespace Telepedia\Extensions\TelepediaCore\Hooks;
 
+use MediaWiki\Hook\GetLocalURL__InternalHook;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\User;
@@ -11,7 +12,10 @@ use Telepedia\Extensions\RequestToBeForgotten\Hooks\RightToBeForgottenRequestCom
 use Telepedia\Extensions\RequestToBeForgotten\RTBFRequest;
 use Throwable;
 
-class TelepediaHooks implements CreateWikiNewWikiHook, RightToBeForgottenRequestComplete {
+class TelepediaHooks implements
+	CreateWikiNewWikiHook,
+	RightToBeForgottenRequestComplete,
+	GetLocalURL__InternalHook {
 
 	public function __construct(
 		private readonly HttpRequestFactory $requestFactory
@@ -146,6 +150,23 @@ class TelepediaHooks implements CreateWikiNewWikiHook, RightToBeForgottenRequest
 			}
 		} catch ( Throwable $e ) {
 			wfDebugLog('TelepediaCore', 'Exception request to be forgotten event to Jira: ' . $e->getMessage());
+		}
+	}
+
+	/**
+	 * Use short urls always, even for internal requests
+	 * @param $title
+	 * @param $url
+	 * @param $query
+	 * @return void
+	 */
+	public function onGetLocalURL__Internal( $title, &$url, $query ): void {
+		global $wgArticlePath, $wgScript;
+
+		$key = wfUrlencode( $title->getPrefixedDBkey() );
+
+		if ( $url == "{$wgScript}?title={$key}&{$query}" ) {
+			$url = wfAppendQuery(str_replace( '$1', $key, $wgArticlePath ), $query );
 		}
 	}
 }

@@ -1,56 +1,57 @@
 {
-  "name": "TelepediaCore",
-  "version": "1.0.0",
-  "author": [
-    "Telepedia Ltd."
-  ],
-  "url": "https://github.com/Telepedia/TelepediaCore",
-  "descriptionmsg": "telepediacore-desc",
-  "license-name": "Apache-2.0",
-  "type": "other",
-  "requires": {
-    "MediaWiki": ">= 1.43"
-  },
-  "MessagesDirs": {
-    "TelepediaCore": [
-      "i18n"
-    ]
-  },
-  "AutoloadNamespaces": {
-    "Telepedia\\Extensions\\TelepediaCore\\": "includes/"
-  },
-  "HookHandlers": {
-    "telepedia": {
-      "class": "Telepedia\\Extensions\\TelepediaCore\\Hooks\\TelepediaHooks",
-      "services": [
-        "HttpRequestFactory"
-      ]
-    }
-  },
-  "Hooks": {
-    "CreateWikiNewWiki": "telepedia",
-    "RightToBeForgottenComplete": "telepedia"
-  },
-  "ConfigRegistry": {
-    "TelepediaCore": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
-  },
-  "ResourceFileModulePaths": {
-    "localBasePath": "",
-    "remoteExtPath": "TelepediaCore"
-  },
-  "config": {
-    "DiscordCreateWikiWebhookUrl": {
-      "description": "String. Webhook to send events for when a wiki is created.",
-      "value": null
-    },
-    "RTBFJiraWebhook": {
-      "description": "String. Jira Webhook url to POST request to be forgotten events to.",
-      "value": null
-    },
-    "RTBFJiraAccessToken": {
-      "description": "String. Jira access token to authenticate with the Jira API",
-      "value": null
-    }
-  },
-  "manifest_version": 2
+	"name": "TelepediaCore",
+	"version": "1.0.0",
+	"author": [
+		"Telepedia Ltd."
+	],
+	"url": "https://github.com/Telepedia/TelepediaCore",
+	"descriptionmsg": "telepediacore-desc",
+	"license-name": "Apache-2.0",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.43"
+	},
+	"MessagesDirs": {
+		"TelepediaCore": [
+			"i18n"
+		]
+	},
+	"AutoloadNamespaces": {
+		"Telepedia\\Extensions\\TelepediaCore\\": "includes/"
+	},
+	"HookHandlers": {
+		"telepedia": {
+			"class": "Telepedia\\Extensions\\TelepediaCore\\Hooks\\TelepediaHooks",
+			"services": [
+				"HttpRequestFactory"
+			]
+		}
+	},
+	"Hooks": {
+		"CreateWikiNewWiki": "telepedia",
+		"RightToBeForgottenComplete": "telepedia",
+		"GetLocalURL::Internal": "telepedia"
+	},
+	"ConfigRegistry": {
+		"TelepediaCore": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "TelepediaCore"
+	},
+	"config": {
+		"DiscordCreateWikiWebhookUrl": {
+			"description": "String. Webhook to send events for when a wiki is created.",
+			"value": null
+		},
+		"RTBFJiraWebhook": {
+			"description": "String. Jira Webhook url to POST request to be forgotten events to.",
+			"value": null
+		},
+		"RTBFJiraAccessToken": {
+			"description": "String. Jira access token to authenticate with the Jira API",
+			"value": null
+		}
+	},
+	"manifest_version": 2
 }
