@@ -5,7 +5,6 @@ namespace Telepedia\Extensions\TelepediaCore\API;
 use MediaWiki\Api\ApiBase;
 use MediaWiki\Api\ApiQuery;
 use MediaWiki\Api\ApiQueryBase;
-use MediaWiki\MainConfigNames;
 use Telepedia\ConfigCentre\Settings\ConfigCentreVariableService;
 use Telepedia\ConfigCentre\WikiDataService;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -39,9 +38,7 @@ class AllWikisHandler extends ApiQueryBase {
 		$wikiData = [];
 
 		foreach ( $wikis as $wiki ) {
-			$wgLogos = $this->getConfig()->get( MainConfigNames::Logos );
-			$logo = $wgLogos['1x'];
-
+			$logos = $this->variableService->getValueByKey( '$wgLogo', $wiki->getWikiId() );
 			$wikiData[] = [
 				'sitename' => $wiki->getSitename(),
 				'url' => $wiki->getUrl(),
