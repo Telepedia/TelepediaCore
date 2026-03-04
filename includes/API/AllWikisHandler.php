@@ -38,7 +38,7 @@ class AllWikisHandler extends ApiQueryBase {
 		$wikiData = [];
 
 		foreach ( $wikis as $wiki ) {
-			$logos = $this->variableService->getValueByKey( '$wgLogo', $wiki->getWikiId() );
+			$logo = $this->variableService->getValueByKey( '$wgLogo', $wiki->getWikiId() );
 			$wikiData[] = [
 				'sitename' => $wiki->getSitename(),
 				'url' => $wiki->getUrl(),
