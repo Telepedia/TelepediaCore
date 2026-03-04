@@ -53,5 +53,14 @@
 			"value": null
 		}
 	},
+	"APIListModules": {
+		"allwikis": {
+			"class": "Telepedia\\Extensions\\TelepediaCore\\API\\AllWikisHandler",
+			"services": [
+				"WikiDataService",
+				"ConfigCentre.ConfigCentreVariableService"
+			]
+		}
+	},
 	"manifest_version": 2
 }
