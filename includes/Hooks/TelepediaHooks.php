@@ -2,8 +2,11 @@
 
 namespace Telepedia\Extensions\TelepediaCore\Hooks;
 
+use HtmlArmor;
 use MediaWiki\Hook\GetLocalURL__InternalHook;
+use MediaWiki\Hook\InitializeArticleMaybeRedirectHook;
 use MediaWiki\Http\HttpRequestFactory;
+use MediaWiki\Linker\Hook\HtmlPageLinkRendererEndHook;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\User;
 use Telepedia\ConfigCentre\Wiki;
@@ -15,7 +18,9 @@ use Throwable;
 class TelepediaHooks implements
 	CreateWikiNewWikiHook,
 	RightToBeForgottenRequestComplete,
-	GetLocalURL__InternalHook {
+	GetLocalURL__InternalHook,
+	InitializeArticleMaybeRedirectHook,
+	HtmlPageLinkRendererEndHook {
 
 	public function __construct(
 		private readonly HttpRequestFactory $requestFactory
@@ -168,5 +173,92 @@ class TelepediaHooks implements
 		if ( $url == "{$wgScript}?title={$key}&{$query}" ) {
 			$url = wfAppendQuery(str_replace( '$1', $key, $wgArticlePath ), $query );
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function onInitializeArticleMaybeRedirect( $title, $request, &$ignoreRedirect, &$target, &$article ) {
+		$title = explode( ':', $title );
+		$prefix = strtolower($title[0]);
+
+		if ( count( $title ) < 3 || $prefix !== 'tp' ) {
+			return true;
+		}
+
+		$wiki = strtolower($title[1]);
+		$page = implode(':', array_slice( $title, 2 ) );
+		$page = str_replace( ' ', '_', $page );
+		$page = urlencode( $page );
+
+		$target = "https://$wiki.telepedia.net/wiki/$page";
+
+		return true;
+	}
+
+	/**
+	 * Global interwiki for [[tp:$1:$2]] -> https://$1.telepedia.net/wiki/$2
+	 * @param $linkRenderer
+	 * @param $target
+	 * @param $isKnown
+	 * @param $text
+	 * @param $attribs
+	 * @param $ret
+	 *
+	 * @return true
+	 */
+	public function onHtmlPageLinkRendererEnd( $linkRenderer, $target, $isKnown, &$text, &$attribs, &$ret ): true {
+		$target = (string)$target;
+		$tooltip = $target;
+		$useText = true;
+
+		$ltarget = strtolower( $target );
+		$ltext = strtolower( HtmlArmor::getHtml( $text ) );
+
+		if ($ltarget == $ltext) {
+			// Allow link piping, but don't modify $text yet
+			$useText = false;
+		}
+
+		$target = explode( ':', $target );
+
+		if ( count( $target ) < 2 ) {
+			// Not enough parameters for interwiki
+			return true;
+		}
+
+		if ( $target[0] == '0' ) {
+			array_shift( $target );
+		}
+
+		$prefix = strtolower( $target[0] );
+
+		if ($prefix != 'tp') {
+			// Not interested
+			return true;
+		}
+
+		$wiki = strtolower( $target[1] );
+		$target = array_slice( $target, 2 );
+		$target = implode( ':', $target );
+
+		if ( !$useText ) {
+			$text = $target;
+		}
+		if ( $text == '' ) {
+			$text = $wiki;
+		}
+
+		$target = str_replace( ' ', '_', $target );
+		$target = urlencode( $target );
+		$linkURL = "https://$wiki.telepedia.net/wiki/$target";
+
+		$attribs = [
+			'href' => $linkURL,
+			'class' => 'extiw',
+			'title' => $tooltip
+		];
+
+		return true;
 	}
 }

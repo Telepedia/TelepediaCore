@@ -30,7 +30,9 @@
 	"Hooks": {
 		"CreateWikiNewWiki": "telepedia",
 		"RightToBeForgottenComplete": "telepedia",
-		"GetLocalURL::Internal": "telepedia"
+		"GetLocalURL::Internal": "telepedia",
+		"InitializeArticleMaybeRedirect": "telepedia",
+		"HtmlPageLinkRendererEnd": "telepedia"
 	},
 	"ConfigRegistry": {
 		"TelepediaCore": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
