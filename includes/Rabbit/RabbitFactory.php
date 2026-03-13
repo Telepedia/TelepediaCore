@@ -64,7 +64,7 @@ class RabbitFactory {
 			$this->connection = new AMQPStreamConnection(
 				$this->options->get( 'RabbitHost' ),
 				$this->options->get( 'RabbitPort' ),
-				$this->options->get( 'RabbitUser' ),
+				$this->options->get( 'RabbitUsername' ),
 				$this->options->get( 'RabbitPassword' ),
 				$this->options->get( 'RabbitVhost' )
 			);
