@@ -73,6 +73,10 @@ class JobQueueRabbitMQ extends JobQueue {
 		$channel = $rabbitFactory->getChannel();
 		$channel->queue_declare( $queue, false, true, false, false );
 
+		// we want Rabbit to acknolwedge that jobs were persisted to disk; this has some overhead, but it should be
+		// manageable as we set a timeout below
+		$channel->confirm_select();
+
 		$items = [];
 		foreach ( $jobs as $job ) {
 			$jobSpec = [
@@ -112,6 +116,21 @@ class JobQueueRabbitMQ extends JobQueue {
 					wfDebugLog( 'RabbitMQ', "Failed to push job to RabbitMQ: " . $e->getMessage() );
 					throw $e;
 				}
+			}
+
+			try {
+				// wait up to 800ms for RabbitMQ to acknowledge that the jobs were persisted to disk
+				// if it takes longer than this, assume something went wrong and the rabbit server is stuck
+				// we could increase this, but its unlikely that if Rabbit didn't acknowledge within 800ms that
+				// it would recover
+				$channel->wait_for_pending_acks( 0.8 );
+			} catch ( Exception $e ) {
+				\wfDebugLog( 'RabbitMQ',
+					"RabbitMQ failed to acknowledge the batch within 800ms: " . $e->getMessage()
+				);
+				// At this point, we don't know if the jobs were saved or lost.
+				// Throwing ensures MediaWiki knows that the job is either persisted or not
+				throw $e;
 			}
 		}
 	}
