@@ -32,7 +32,8 @@
 		"RightToBeForgottenComplete": "telepedia",
 		"GetLocalURL::Internal": "telepedia",
 		"InitializeArticleMaybeRedirect": "telepedia",
-		"HtmlPageLinkRendererEnd": "telepedia"
+		"HtmlPageLinkRendererEnd": "telepedia",
+		"MessageCacheFetchOverrides": "telepedia"
 	},
 	"ConfigRegistry": {
 		"TelepediaCore": "MediaWiki\\Config\\GlobalVarConfig::newInstance"

@@ -3,12 +3,15 @@
 namespace Telepedia\Extensions\TelepediaCore\Hooks;
 
 use HtmlArmor;
+use MediaWiki\Cache\Hook\MessageCacheFetchOverridesHook;
 use MediaWiki\Hook\GetLocalURL__InternalHook;
 use MediaWiki\Hook\InitializeArticleMaybeRedirectHook;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Linker\Hook\HtmlPageLinkRendererEndHook;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\User;
+use MessageCache;
 use Telepedia\ConfigCentre\Wiki;
 use Telepedia\Extensions\CreateWiki\Hooks\CreateWikiNewWikiHook;
 use Telepedia\Extensions\RequestToBeForgotten\Hooks\RightToBeForgottenRequestComplete;
@@ -20,7 +23,8 @@ class TelepediaHooks implements
 	RightToBeForgottenRequestComplete,
 	GetLocalURL__InternalHook,
 	InitializeArticleMaybeRedirectHook,
-	HtmlPageLinkRendererEndHook {
+	HtmlPageLinkRendererEndHook,
+	MessageCacheFetchOverridesHook {
 
 	public function __construct(
 		private readonly HttpRequestFactory $requestFactory
@@ -260,5 +264,57 @@ class TelepediaHooks implements
 		];
 
 		return true;
+	}
+
+	/**
+	 * Override some system messages with our custom versions
+	 * @param array $keys
+	 * @return void
+	 */
+	public function onMessageCacheFetchOverrides(array &$keys): void {
+		static $keysToOverride = [
+			'copyrightwarning',
+			'pagetitle',
+			'group-staff-member',
+			'group-steward-member',
+			'group-saber-member',
+			'group-staff',
+			'vector-night-mode-issue-reporting-notice-url',
+			'privacypage',
+			"disclaimers"
+		];
+
+		$languageCode = MediaWikiServices::getInstance()->getMainConfig()->get( MainConfigNames::LanguageCode );
+
+		$transformationCallback = static function ( string $key, MessageCache $cache ) use ( $languageCode ): string {
+			$transformedKey = "telepedia-$key";
+
+			// MessageCache uses ucfirst if ord( key ) is < 128, which is true of all
+			// of the above.  Revisit if non-ASCII keys are used.
+			$ucKey = ucfirst($key);
+
+			if (
+				/*
+				 * Override order:
+				 * 1. If the MediaWiki:$ucKey page exists, use the key unprefixed
+				 * (in all languages) with normal fallback order.  Specific
+				 * language pages (MediaWiki:$ucKey/xy) are not checked when
+				 * deciding which key to use, but are still used if applicable
+				 * after the key is decided.
+				 *
+				 * 2. Otherwise, use the prefixed key with normal fallback order
+				 * (including MediaWiki pages if they exist).
+				 */
+				$cache->getMsgFromNamespace( $ucKey, $languageCode ) === false
+			) {
+				return $transformedKey;
+			}
+
+			return $key;
+		};
+
+		foreach ( $keysToOverride as $key ) {
+			$keys[ $key ] = $transformationCallback;
+		}
 	}
 }

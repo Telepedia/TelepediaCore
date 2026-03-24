@@ -1,1 +1,11 @@
-{}
+{
+	"telepedia-pagetitle": "$1 | {{SITENAME}}",
+	"telepedia-group-staff-member": "staff",
+	"telepedia-group-steward-member": "steward",
+	"telepedia-group-saber-member": "SABER",
+	"telepedia-group-staff": "Telepedia Staff",
+	"telepedia-vector-night-mode-issue-reporting-notice-url": "https://telepedia.atlassian.net/servicedesk/customer/portal/1/group/1",
+	"telepedia-copyrightwarning": "Please note all contributions to {{SITENAME}} are considered to be released under $2",
+	"telepedia-privacypage": "tpl:privacy",
+	"telepedia-disclaimers": "-"
+}
