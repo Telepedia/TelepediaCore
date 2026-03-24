@@ -6,6 +6,6 @@
 	"telepedia-group-staff": "Telepedia Staff",
 	"telepedia-vector-night-mode-issue-reporting-notice-url": "https://telepedia.atlassian.net/servicedesk/customer/portal/1/group/1",
 	"telepedia-copyrightwarning": "Please note all contributions to {{SITENAME}} are considered to be released under $2",
-	"telepedia-privacypage": "tpl:privacy",
+	"telepedia-privacypage": "tpnet:privacy",
 	"telepedia-disclaimers": "-"
 }
