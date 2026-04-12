@@ -56,6 +56,30 @@
 			"value": null
 		}
 	},
+	"SpecialPages": {
+		"Renameuser": {
+			"class": "Telepedia\\Extensions\\TelepediaCore\\Specials\\SpecialRenameUser",
+			"services": [
+				"ConnectionProvider",
+				"PermissionManager",
+				"TitleFactory",
+				"UserFactory",
+				"UserNamePrefixSearch",
+				"UserNameUtils",
+				"RenameUserService"
+			]
+		}
+	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
+	"JobClasses": {
+		"CrossWikiRenameUserJob": {
+			"class": "Telepedia\\Extensions\\TelepediaCore\\RenameUser\\CrossWikiRenameUserJob",
+			"services": [],
+			"needsPage": false
+		}
+	},
 	"APIListModules": {
 		"allwikis": {
 			"class": "Telepedia\\Extensions\\TelepediaCore\\API\\AllWikisHandler",
