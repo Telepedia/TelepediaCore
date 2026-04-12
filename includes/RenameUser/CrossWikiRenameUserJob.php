@@ -33,7 +33,7 @@ class CrossWikiRenameUserJob extends Job {
 
 	public function __construct( array $params ) {
 		parent::__construct( self::JOB_NAME, $params );
-		$this->logger = LoggerFactory::getInstance( 'RenameUser' );
+		$this->logger = LoggerFactory::getInstance( 'Renameuser' );
 	}
 
 	public function run(): bool {

@@ -35,7 +35,7 @@ class RenameUserService {
 		private readonly JobQueueGroupFactory $jobQueueFactory,
 		private readonly UserNameUtils $userNameUtils,
 	) {
-		$this->logger = LoggerFactory::getInstance( 'RenameUser' );
+		$this->logger = LoggerFactory::getInstance( 'Renameuser' );
 	}
 
 	/**
