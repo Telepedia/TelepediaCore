@@ -1,5 +1,5 @@
 {
     "require": {
-        "php-amqplib/php-amqplib": "*"
+        "stomp-php/stomp-php": "^5.1"
     }
 }

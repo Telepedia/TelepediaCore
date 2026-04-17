@@ -54,25 +54,21 @@
 			"description": "String. Jira access token to authenticate with the Jira API",
 			"value": null
 		},
-		"RabbitHost": {
-			"description": "String. Host IP of the RabbitMQ Server",
+		"ArtemisHost": {
+			"description": "String. Host IP of the Apache Artemis Server",
 			"value": null
 		},
-		"RabbitPort": {
-			"description": "String. Port of the RabbitMQ Server",
+		"ArtemisPort": {
+			"description": "String. Port of the Apache Artemis Server",
 			"value": null
 		},
-		"RabbitUsername": {
-			"description": "String. Username for connecting to RabbitMQ",
+		"ArtemisUsername": {
+			"description": "String. Username for connecting to Apache Artemis",
 			"value": null
 		},
-		"RabbitPassword": {
-			"description": "String. Password for connecting to RabbitMQ",
+		"ArtemisPassword": {
+			"description": "String. Password for connecting to Apache Artemis",
 			"value": null
-		},
-		"RabbitVhost": {
-			"description": "String. Default vhost to use to push to RabbitMQ",
-			"value": "/"
 		}
 	},
 	"APIListModules": {

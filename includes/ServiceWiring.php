@@ -4,14 +4,14 @@ namespace Telepedia\Extensions\TelepediaCore;
 
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MediaWikiServices;
-use Telepedia\Extensions\TelepediaCore\Rabbit\RabbitFactory;
+use Telepedia\Extensions\TelepediaCore\Artemis\ArtemisFactory;
 
 return [
-	'RabbitFactory' => static function (
+	'ArtemisFactory' => static function (
 		MediaWikiServices $services
-	): RabbitFactory {
-		return new RabbitFactory(
-			new ServiceOptions( RabbitFactory::CONSTRUCTOR_OPTIONS, $services->getMainConfig() ),
+	): ArtemisFactory {
+		return new ArtemisFactory(
+			new ServiceOptions( ArtemisFactory::CONSTRUCTOR_OPTIONS, $services->getMainConfig() ),
 		);
 	}
 ];
