@@ -96,12 +96,12 @@ class JobQueueArtemis extends JobQueue {
 			$headers = [
 				'persistent' => 'true',
 				'content-type' => 'application/json',
-				'receipt' => $jobSpec['uuid']
+				'receipt' => $item['uuid']
 			];
 
 			// if the job is delayed, tell Artemis to hold the job hostage
 			// until then
-			$releaseTimestamp = $jobSpec['rtimestamp'];
+			$releaseTimestamp = $item['rtimestamp'];
 			if ( $releaseTimestamp > 0 ) {
 				$delayMs = max( 0, ( $releaseTimestamp - time() ) * 1000 );
 				if ( $delayMs > 0 ) {
@@ -110,7 +110,7 @@ class JobQueueArtemis extends JobQueue {
 			}
 
 			try {
-				$client->send( $queue, json_encode( $jobSpec), $headers );
+				$client->send( $queue, json_encode( $item), $headers );
 			} catch ( Exception $e ) {
 				// not sure this job queue group here is the best, but alas
 				wfDebugLog( 'runJobs', 'Failed to push job to Artemis: ' . $e->getMessage() );
