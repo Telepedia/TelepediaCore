@@ -5,9 +5,23 @@ namespace Telepedia\Extensions\TelepediaCore;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MediaWikiServices;
 use Telepedia\Extensions\TelepediaCore\Artemis\ArtemisFactory;
+use Telepedia\Extensions\TelepediaCore\RenameUser\RenameUserService;
 
 return [
-	'ArtemisFactory' => static function (
+
+	'RenameUserService' => static function (
+		MediaWikiServices $services
+	): RenameUserService {
+		return new RenameUserService(
+			$services->getUserFactory(),
+			$services->getConnectionProvider(),
+			$services->get( 'UAM.GlobalUserService' ),
+			$services->getJobQueueGroupFactory(),
+			$services->getUserNameUtils()
+		);
+	},
+  
+  'ArtemisFactory' => static function (
 		MediaWikiServices $services
 	): ArtemisFactory {
 		return new ArtemisFactory(

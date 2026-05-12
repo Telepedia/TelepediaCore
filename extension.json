@@ -32,7 +32,8 @@
 		"RightToBeForgottenComplete": "telepedia",
 		"GetLocalURL::Internal": "telepedia",
 		"InitializeArticleMaybeRedirect": "telepedia",
-		"HtmlPageLinkRendererEnd": "telepedia"
+		"HtmlPageLinkRendererEnd": "telepedia",
+		"MessageCacheFetchOverrides": "telepedia"
 	},
 	"ConfigRegistry": {
 		"TelepediaCore": "MediaWiki\\Config\\GlobalVarConfig::newInstance"
@@ -69,6 +70,30 @@
 		"ArtemisPassword": {
 			"description": "String. Password for connecting to Apache Artemis",
 			"value": null
+		}
+	},
+	"SpecialPages": {
+		"Renameuser": {
+			"class": "Telepedia\\Extensions\\TelepediaCore\\Specials\\SpecialRenameUser",
+			"services": [
+				"ConnectionProvider",
+				"PermissionManager",
+				"TitleFactory",
+				"UserFactory",
+				"UserNamePrefixSearch",
+				"UserNameUtils",
+				"RenameUserService"
+			]
+		}
+	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
+	"JobClasses": {
+		"CrossWikiRenameUserJob": {
+			"class": "Telepedia\\Extensions\\TelepediaCore\\RenameUser\\CrossWikiRenameUserJob",
+			"services": [],
+			"needsPage": false
 		}
 	},
 	"APIListModules": {
