@@ -2,7 +2,9 @@
 
 namespace Telepedia\Extensions\TelepediaCore;
 
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\MediaWikiServices;
+use Telepedia\Extensions\TelepediaCore\Artemis\ArtemisFactory;
 use Telepedia\Extensions\TelepediaCore\RenameUser\RenameUserService;
 
 return [
@@ -18,5 +20,12 @@ return [
 			$services->getUserNameUtils()
 		);
 	},
-
+  
+  'ArtemisFactory' => static function (
+		MediaWikiServices $services
+	): ArtemisFactory {
+		return new ArtemisFactory(
+			new ServiceOptions( ArtemisFactory::CONSTRUCTOR_OPTIONS, $services->getMainConfig() ),
+		);
+	}
 ];
