@@ -73,7 +73,7 @@ class TelepediaHooks implements
 				],
 				[
 					'name' => 'Domain',
-					'value' => $wiki->getUrl(),
+					'value' => $domain,
 					'inline' => false
 				]
 			],
