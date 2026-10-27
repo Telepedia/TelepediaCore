@@ -40,7 +40,6 @@ class LBFactoryMulti_TP extends LBFactoryMulti {
 
 		if ( self::$resolveDomainInstanceMethod === null ) {
 			self::$resolveDomainInstanceMethod = new ReflectionMethod( LBFactoryMulti::class, 'resolveDomainInstance' );
-			self::$resolveDomainInstanceMethod->setAccessible( true );
 		}
 
 		// we're not interested in overriding this behaviour, but yet again,
@@ -55,7 +54,6 @@ class LBFactoryMulti_TP extends LBFactoryMulti {
 		// whether upstream will consider making it so. So we'll have to resort to this unfortunately
 		if ( self::$sectionsByDBProperty === null ) {
 			self::$sectionsByDBProperty = new ReflectionProperty( LBFactoryMulti::class, 'sectionsByDB' );
-			self::$sectionsByDBProperty->setAccessible( true );
 		}
 
 		$sections = self::$sectionsByDBProperty->getValue( $this );
